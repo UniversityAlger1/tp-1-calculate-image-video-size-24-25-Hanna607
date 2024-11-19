@@ -9,34 +9,25 @@
 // Return value
 //   colored video size (based on the unit passed parametter)
 float video(int w, int h, int durationMovie, int durationCredits, int fps, char* unit) {
-    // Taille d'une image en bits
-    int colorBitsPerFrame = w * h * 3 * 8;  // RGB : 3 composantes, 8 bits chacune
-    int bwBitsPerFrame = w * h * 8;         // Noir et blanc : 8 bits par pixel
+    // Taille totale en bits pour la section colorée
+    int totalColorBits = w * h * 3 * 8 * fps * durationMovie; // RGB, 3 composantes, 8 bits chacune
 
-    // Nombre total de frames pour chaque section
-    int totalFramesMovie = durationMovie * fps;
-    int totalFramesCredits = durationCredits * fps;
+    // Taille totale en bits pour la section noir et blanc
+    int totalBWBits = w * h * 8 * fps * durationCredits; // 1 composante, 8 bits
 
-    // Taille totale des sections (en bits)
-    long long totalColorBits = (long long)totalFramesMovie * colorBitsPerFrame;
-    long long totalBWBits = (long long)totalFramesCredits * bwBitsPerFrame;
-    long long totalBits = totalColorBits + totalBWBits;
+    // Taille totale en bits de la vidéo
+    int totalBits = totalColorBits + totalBWBits;
 
-    // Conversion selon l'unité
+    // Conversion selon l'unité spécifiée
     if (strcmp(unit, "bt") == 0) {
-        // Retourner la taille en bits
-        return (float)totalBits;
+        return totalBits / 8.0; // En bytes
     } else if (strcmp(unit, "ko") == 0) {
-        // Convertir en kilobits (1 kilobit = 1024 bits)
-        return totalBits / 1024.0f;
+        return totalBits / (8.0 * 1024.0); // En kilobits
     } else if (strcmp(unit, "mo") == 0) {
-        // Convertir en mégabits (1 mégabit = 1024 kilobits)
-        return totalBits / (1024.0f * 1024.0f);
+        return totalBits / (8.0 * 1024.0 * 1024.0); // En megabits
     } else if (strcmp(unit, "go") == 0) {
-        // Convertir en gigabits (1 gigabit = 1024 mégabits)
-        return totalBits / (1024.0f * 1024.0f * 1024.0f);
+        return totalBits / (8.0 * 1024.0 * 1024.0 * 1024.0); // En gigabits
     } else {
-        // Unité invalide, retourner 0
-        return 0.0f;
+        return -1; // Unité non reconnue
     }
 }
