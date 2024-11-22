@@ -9,25 +9,31 @@
 // Return value
 //   colored video size (based on the unit passed parametter)
 float video(int w, int h, int durationMovie, int durationCredits, int fps, char* unit) {
-    // Taille totale en bits pour la section colorée
-    int totalColorBits = w * h * 3 * 8 * fps * durationMovie; // RGB, 3 composantes, 8 bits chacune
+ int colorFrameSize = w * h * 3; // 3 bytes per pixel for RGB
+    int grayFrameSize = w * h;     // 1 byte per pixel for grayscale
 
-    // Taille totale en bits pour la section noir et blanc
-    int totalBWBits = w * h * 8 * fps * durationCredits; // 1 composante, 8 bits
+    // Calculate the total number of frames
+    int totalColorFrames = durationMovie * fps;
+    int totalGrayFrames = durationCredits * fps;
 
-    // Taille totale en bits de la vidéo
-    int totalBits = totalColorBits + totalBWBits;
+    // Calculate the total size in bytes
+    long long totalSizeBytes = 
+        (long long)totalColorFrames * colorFrameSize + 
+        (long long)totalGrayFrames * grayFrameSize;
 
-    // Conversion selon l'unité spécifiée
-    if (strcmp(unit, "bt") == 0) {
-        return totalBits / 8.0; // En bytes
+    // Convert the size based on the unit
+    float convertedSize = 0.0;
+    if (unit == NULL || strcmp(unit, "bt") == 0){
+        convertedSize = totalSizeBytes; // bytes
     } else if (strcmp(unit, "ko") == 0) {
-        return totalBits / (8.0 * 1024.0); // En kilobits
+        convertedSize = (totalSizeBytes * 8.0) / 1024.0; // kilobits
     } else if (strcmp(unit, "mo") == 0) {
-        return totalBits / (8.0 * 1024.0 * 1024.0); // En megabits
+        convertedSize = (totalSizeBytes * 8.0) / (1024.0 * 1024.0); // megabits
     } else if (strcmp(unit, "go") == 0) {
-        return totalBits / (8.0 * 1024.0 * 1024.0 * 1024.0); // En gigabits
+        convertedSize = (totalSizeBytes * 8.0) / (1024.0 * 1024.0 * 1024.0); // gigabits
     } else {
-        return -1; // Unité non reconnue
+        return 0; // Invalid unit
     }
+
+    return convertedSize;
 }

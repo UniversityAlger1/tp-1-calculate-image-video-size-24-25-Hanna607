@@ -7,19 +7,17 @@
 // Return value
 //   colored image size Bitmap (based on the unit passed parametter)
 float coloredBitmap(int w, int h, char* unit) {
-    // Taille totale en bits pour une image RGB
-    int totalBits = w * h * 3 * 8; // Chaque pixel a 3 composantes RGB, codées sur 8 bits chacune
-
-    // Conversion selon l'unité spécifiée
-    if (strcmp(unit, "bt") == 0) {
-        return totalBits; // En bits
+   float tailleOctect=w*h*3;
+    if (unit == NULL || strcmp(unit, "bt") == 0) {
+        return tailleOctect;
     } else if (strcmp(unit, "ko") == 0) {
-        return totalBits / 1000.0; // En kilobits
+        return tailleOctect / 1024;
     } else if (strcmp(unit, "mo") == 0) {
-        return totalBits / (1000.0 * 1000.0); // En megabits
+        return tailleOctect / (1024 * 1024);
     } else if (strcmp(unit, "go") == 0) {
-        return totalBits / (1000.0 * 1000.0 * 1000.0); // En gigabits
+        return tailleOctect / (1024*1024*1024);
     } else {
-        return -1; // Unité non reconnue
+        printf("Invalid unit. Supported units: bytes,KB,MB,GB.\n");
+        return -1; 
     }
 }
