@@ -35,5 +35,5 @@ float video(int w, int h, int durationMovie, int durationCredits, int fps, char*
         return -1.0f;
     }
 
-    return size / 8;
+   return size / 8;
 }
